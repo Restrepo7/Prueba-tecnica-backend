@@ -1,0 +1,514 @@
+{
+  "info": {
+    "name": "Horario Académico API",
+    "description": "Colección completa para probar el backend de horarios académicos con NestJS",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('token', response.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Carlos López\",\n  \"email\": \"carlos@example.com\",\n  \"password\": \"123456\",\n  \"rol\": \"estudiante\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            },
+            "description": "Registrar nuevo usuario"
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('token', response.token);",
+                  "    console.log('Token guardado:', response.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Login de usuario - guarda el token automáticamente"
+          }
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "profile"]
+            },
+            "description": "Obtener perfil del usuario autenticado"
+          }
+        },
+        {
+          "name": "Verify Token",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/verify",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "verify"]
+            },
+            "description": "Verificar si el token es válido"
+          }
+        }
+      ],
+      "description": "Endpoints de autenticación"
+    },
+    {
+      "name": "Usuarios",
+      "item": [
+        {
+          "name": "Crear Usuario",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Ana Martínez\",\n  \"email\": \"ana@example.com\",\n  \"password\": \"123456\",\n  \"rol\": \"profesor\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/usuarios",
+              "host": ["{{baseUrl}}"],
+              "path": ["usuarios"]
+            },
+            "description": "Crear nuevo usuario (requiere rol admin)"
+          }
+        },
+        {
+          "name": "Listar Usuarios",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/usuarios",
+              "host": ["{{baseUrl}}"],
+              "path": ["usuarios"]
+            },
+            "description": "Obtener todos los usuarios"
+          }
+        },
+        {
+          "name": "Obtener Usuario por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/usuarios/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["usuarios", "1"]
+            },
+            "description": "Obtener un usuario específico"
+          }
+        },
+        {
+          "name": "Actualizar Usuario",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Ana Martínez Actualizado\",\n  \"rol\": \"admin\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/usuarios/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["usuarios", "1"]
+            },
+            "description": "Actualizar datos de un usuario"
+          }
+        },
+        {
+          "name": "Eliminar Usuario",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/usuarios/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["usuarios", "1"]
+            },
+            "description": "Eliminar un usuario (requiere rol admin)"
+          }
+        }
+      ],
+      "description": "CRUD de usuarios"
+    },
+    {
+      "name": "Asignaturas",
+      "item": [
+        {
+          "name": "Crear Asignatura",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Inglés Avanzado\",\n  \"codigo\": \"ING301\",\n  \"creditos\": 3,\n  \"maxClasesSemana\": 2,\n  \"descripcion\": \"Curso avanzado de inglés\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/asignaturas",
+              "host": ["{{baseUrl}}"],
+              "path": ["asignaturas"]
+            },
+            "description": "Crear nueva asignatura"
+          }
+        },
+        {
+          "name": "Listar Asignaturas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/asignaturas",
+              "host": ["{{baseUrl}}"],
+              "path": ["asignaturas"]
+            },
+            "description": "Obtener todas las asignaturas"
+          }
+        },
+        {
+          "name": "Obtener Asignatura por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/asignaturas/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["asignaturas", "1"]
+            },
+            "description": "Obtener una asignatura específica"
+          }
+        },
+        {
+          "name": "Actualizar Asignatura",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"creditos\": 4,\n  \"maxClasesSemana\": 3\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/asignaturas/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["asignaturas", "1"]
+            },
+            "description": "Actualizar datos de una asignatura"
+          }
+        },
+        {
+          "name": "Eliminar Asignatura",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/asignaturas/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["asignaturas", "1"]
+            },
+            "description": "Eliminar una asignatura"
+          }
+        }
+      ],
+      "description": "CRUD de asignaturas"
+    },
+    {
+      "name": "Horarios",
+      "item": [
+        {
+          "name": "Crear Horario",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dia\": \"lunes\",\n  \"horaInicio\": \"10:00:00\",\n  \"horaFin\": \"12:00:00\",\n  \"idUsuario\": 1,\n  \"idAsignatura\": 1,\n  \"salon\": \"C-301\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/schedules",
+              "host": ["{{baseUrl}}"],
+              "path": ["schedules"]
+            },
+            "description": "Crear nuevo horario"
+          }
+        },
+        {
+          "name": "Listar Horarios",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/schedules",
+              "host": ["{{baseUrl}}"],
+              "path": ["schedules"]
+            },
+            "description": "Obtener todos los horarios"
+          }
+        },
+        {
+          "name": "Obtener Horario por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/schedules/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["schedules", "1"]
+            },
+            "description": "Obtener un horario específico"
+          }
+        },
+        {
+          "name": "Obtener Horarios por Usuario",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/schedules/usuario/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["schedules", "usuario", "1"]
+            },
+            "description": "Obtener todos los horarios de un usuario específico"
+          }
+        },
+        {
+          "name": "Obtener Horarios por Usuario (Query)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/schedules?idUsuario=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["schedules"],
+              "query": [
+                {
+                  "key": "idUsuario",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Obtener horarios filtrando por query param"
+          }
+        },
+        {
+          "name": "Actualizar Horario",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dia\": \"martes\",\n  \"salon\": \"D-401\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/schedules/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["schedules", "1"]
+            },
+            "description": "Actualizar datos de un horario"
+          }
+        },
+        {
+          "name": "Eliminar Horario",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/schedules/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["schedules", "1"]
+            },
+            "description": "Eliminar un horario"
+          }
+        }
+      ],
+      "description": "CRUD de horarios y consultas"
+    }
+  ]
+}
